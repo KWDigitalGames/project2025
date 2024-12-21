@@ -12,6 +12,20 @@ characters = [
                 "value": "100",
             }
         ]
+    }, 
+    {
+        "name": "Tordek",
+        "level": "100",
+            "items": [
+                {
+                    "name": "battleaxe",
+                    "value": "150"
+                }, 
+                {
+                    "name": "platemail",
+                    "value": "1000"
+                }
+            ]
     }
 ]
 
