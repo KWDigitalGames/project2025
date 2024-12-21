@@ -1,30 +1,51 @@
-from flask import Flask, jsonify, request 
+from flask import Flask, request
   
-# creating a Flask app 
 app = Flask(__name__) 
-  
-# on the terminal type: curl http://127.0.0.1:5000/ 
-# returns hello world when we use GET. 
-# returns the data that we send when we use POST. 
-@app.route('/', methods = ['GET', 'POST']) 
-def home(): 
-    if(request.method == 'GET'): 
-  
-        data = "hello world"
-        return jsonify({'data': data}) 
-  
-  
-# A simple function to calculate the square of a number 
-# the number to be squared is sent in the URL when we use GET 
-# on the terminal type: curl http://127.0.0.1:5000 / home / 10 
-# this returns 100 (square of 10) 
-@app.route('/home/<int:num>', methods = ['GET']) 
-def disp(num): 
-  
-    return jsonify({'data': num**2}) 
-  
-  
-# driver function 
-if __name__ == '__main__': 
-  
-    app.run(debug = True) 
+
+characters = [
+{
+    "name": "Adelajda",
+    "level": "1",
+        "items": [
+            {
+                "name": "longbow",
+                "value": "100",
+            }
+        ]
+    }
+]
+
+@app.get("/character")
+def get_characters():
+    return {"characters": characters}
+
+@app.get("/character/<string:name>")
+def get_character(name):
+    for character in characters:
+        if character["name"] == name:
+            return character
+        return {"message": "Character not foun"}, 404
+
+@app.get("/character/<string:name>/item")
+def get_item_in_character(name):
+    for character in characters:
+        if character["name"] == name:
+            return {"items": character["items"]}
+    return {"message": "Character not found"}, 404
+
+@app.post("/character")
+def create_character():
+    request_data = request.get_json()
+    new_character = {"name": request_data["name"], "level": request_data["level"], "items": []}
+    characters.append(new_character)
+    return new_character, 201
+
+@app.post("/character/<string:name>/item")
+def create_item(name):
+    request_data = request.get_json()
+    for character in characters:
+        if character["name"] == name:
+            new_item = {"name": request_data["name"], "value": request_data["value"]}
+            character["items"].append(new_item)
+            return new_item, 201
+    return {"message": "Character not found"}, 404
