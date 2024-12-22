@@ -38,7 +38,7 @@ def get_character(name):
     for character in characters:
         if character["name"] == name:
             return character
-        return {"message": "Character not foun"}, 404
+    return {"message": "Character not found"}, 404
 
 @app.get("/character/<string:name>/item")
 def get_item_in_character(name):
@@ -63,3 +63,6 @@ def create_item(name):
             character["items"].append(new_item)
             return new_item, 201
     return {"message": "Character not found"}, 404
+
+if __name__ == "__main__":
+    app.run(debug=True)
