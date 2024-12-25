@@ -3,13 +3,36 @@ trigger:
     include:
       - master
 
-pool:
-  vmImage: ubuntu-latest
+pool: Default
+
+variables:
+  azureSubscription: '91b277db-132d-41ed-beda-d2effc05ba4a'
+  port: 5000
+  location: 'polandcentral'
+  resourceGroup: 'project2025'
+  keyVaultName: 'project2025-keyvault'
+  containerAppName: 'rpg-app' 
+  containerAppEnvironment: 'rpg-app-env'
+  acrName: 'rpgproject'
+  ingress: 'external'
 
 steps:
+  - task: AzureKeyVault@2
+    inputs:
+      azureSubscription: $(azureSubscription)
+      KeyVaultName: $(keyVaultName)
+      SecretsFilter: '*' 
+      RunAsPreJob: true
   - task: AzureContainerApps@1
     inputs:
-      azureSubscription: '91b277db-132d-41ed-beda-d2effc05ba4a'
-      containerAppName: 'rpg-app'
-      resourceGroup: 'project2025'
-      imageToDeploy: 'https://hub.docker.com/repository/docker/bunchieldz/flask/tags/1.0/' 
+      azureSubscription: $(azureSubscription)
+      appSourcePath: '$(Build.SourcesDirectory)'
+      containerAppName: $(containerAppName)
+      resourceGroup: $(resourceGroup)
+      acrName: $(acrName)
+      acrUsername: $(ACR-USERNAME)
+      acrPassword: $(ACR-PASSWORD)
+      ingress: $(ingress)
+      location: $(location)
+      targetPort: $(port)
+      containerAppEnvironment: $(containerAppEnvironment)
