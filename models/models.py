@@ -3,6 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import DeclarativeBase
 import json
+import os
+from dotenv import load_dotenv, dotenv_values 
  
 Base = declarative_base
 
@@ -30,13 +32,13 @@ def __init__(self, name, level):
 def __repr__(self):
     return f"<statement>"
 
+load_dotenv() 
 
-
-user = 'rpgapp_user'
-password = 'jPHPgQ89HxveAMdG'
-host = '127.0.0.1'
-port = 5455
-database = 'rpgapp'
+user = os.getenv("user")
+password = os.getenv("password")
+host = os.getenv("host")
+port = os.getenv("port")
+database = os.getenv("database")
  
 # PYTHON FUNCTION TO CONNECT TO THE POSTGRESQL DATABASE AND
 # RETURN THE SQLACHEMY ENGINE OBJECT
@@ -46,6 +48,3 @@ def get_connection():
             user, password, host, port, database
         )
     )
-
-engine = get_connection()
-Base.metadata.create_all(bind=engine)

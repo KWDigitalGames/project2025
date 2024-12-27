@@ -1,7 +1,9 @@
 from flask import Flask, request
-from models import CharacterModel
+from models.models import Base
+from models.models import CharacterModel
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
 import json
@@ -31,6 +33,11 @@ def get_connection():
     )
 
 engine = get_connection()
+
+engine = get_connection()
+#Base = declarative_base
+Base.metadata.create_all(bind=engine)
+
 print(engine)
 
 @app.get("/character")
