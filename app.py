@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
 import json
+import os
+from dotenv import load_dotenv, dotenv_values 
 
 app = Flask(__name__) 
 
@@ -12,11 +14,14 @@ def set_default(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError
-user = 'rpgapp_user'
-password = 'jPHPgQ89HxveAMdG'
-host = '127.0.0.1'
-port = 5455
-database = 'rpgapp'
+
+load_dotenv() 
+
+user = os.getenv("user")
+password = os.getenv("password")
+host = os.getenv("host")
+port = os.getenv("port")
+database = os.getenv("database")
  
 def get_connection():
     return create_engine(
