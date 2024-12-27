@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, make_response
 from models.models import Base
 from models.models import CharacterModel
 from sqlalchemy import create_engine
@@ -34,8 +34,6 @@ def get_connection():
 
 engine = get_connection()
 
-engine = get_connection()
-#Base = declarative_base
 Base.metadata.create_all(bind=engine)
 
 print(engine)
@@ -59,8 +57,7 @@ def get_character(name):
                 data = {}
                 data['name'] = c.name
                 data['level'] = c.level
-                json_data = json.dumps(data)
-                return json_data
+                return make_response(jsonify(data), 200)
         return {"message": "Character not found"}, 404
 
 @app.post("/character/create")
@@ -74,10 +71,11 @@ def create_character():
         try:
             with Session(engine) as session:
                 session.add(character)
+                character_data = (character.name, character.level)
                 session.commit()
         except exc.SQLAlchemyError:
             return app.aborter(500)
-        return '200'
+        return make_response(jsonify(character_data), 200)
 
 if __name__ == "__main__":
     app.run(debug=True)
