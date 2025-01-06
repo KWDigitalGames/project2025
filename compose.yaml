@@ -1,0 +1,41 @@
+services:
+  db:
+    container_name: postgres
+    build: ./db/
+    ports:
+      - "5432"
+    expose:
+    - "5432"
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgrespassword
+    - POSTGRES_DB=postgres
+    networks:
+    - docker_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", $POSTGRES_USER, "-d", $POSTGRES_DB]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+  api:
+    container_name: rpgapp
+    build: .
+    ports:
+      - "5005:5000"
+    networks:
+      - docker_network
+    depends_on:
+      db:
+        condition: service_healthy
+  mon:
+    container_name: prometheus
+    build: ./mon/.
+    ports: 
+      - "9091:9090"
+    expose: 
+      - "9090"
+    networks:
+      - docker_network
+networks:
+  docker_network:
+    driver: bridge
